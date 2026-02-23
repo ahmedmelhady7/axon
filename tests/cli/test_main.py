@@ -296,11 +296,12 @@ class TestSetup:
     """Tests for the setup command."""
 
     def test_setup_no_flags_shows_both(self) -> None:
-        """Setup with no flags should show config for both Claude and Cursor."""
+        """Setup with no flags should show config for Claude, Cursor and Codex."""
         result = runner.invoke(app, ["setup"])
         assert result.exit_code == 0
         assert "Claude Code" in result.output
         assert "Cursor" in result.output
+        assert "Codex" in result.output
         assert '"axon"' in result.output
 
     def test_setup_claude_only(self) -> None:
@@ -309,6 +310,7 @@ class TestSetup:
         assert result.exit_code == 0
         assert "Claude Code" in result.output
         assert "Cursor" not in result.output
+        assert "Codex" not in result.output
 
     def test_setup_cursor_only(self) -> None:
         """Setup with --cursor should show only Cursor config."""
@@ -316,6 +318,16 @@ class TestSetup:
         assert result.exit_code == 0
         assert "Cursor" in result.output
         assert "Claude Code" not in result.output
+        assert "Codex" not in result.output
+
+    def test_setup_codex_only(self) -> None:
+        """Setup with --codex should show only Codex config."""
+        result = runner.invoke(app, ["setup", "--codex"])
+        assert result.exit_code == 0
+        assert "Codex" in result.output
+        assert "Claude Code" not in result.output
+        assert "Cursor" not in result.output
+        assert "mcp_servers.axon" in result.output
 
     def test_setup_both_flags(self) -> None:
         """Setup with both flags should show both configs."""
@@ -323,6 +335,14 @@ class TestSetup:
         assert result.exit_code == 0
         assert "Claude Code" in result.output
         assert "Cursor" in result.output
+
+    def test_setup_all_flags(self) -> None:
+        """Setup with all flags should show all configs."""
+        result = runner.invoke(app, ["setup", "--claude", "--cursor", "--codex"])
+        assert result.exit_code == 0
+        assert "Claude Code" in result.output
+        assert "Cursor" in result.output
+        assert "Codex" in result.output
 
 
 class TestMcp:

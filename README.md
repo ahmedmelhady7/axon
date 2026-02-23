@@ -23,7 +23,7 @@ Most code intelligence tools treat your codebase as flat text. Axon builds a **s
 
 ## Why Axon?
 
-**For AI agents (Claude Code, Cursor):**
+**For AI agents (Claude Code, Cursor, Codex):**
 - "What breaks if I change this function?" → blast radius via call graph + type references + git coupling
 - "What code is never called?" → dead code detection with framework-aware exemptions
 - "Show me the login flow end-to-end" → execution flow tracing from entry points through the call graph
@@ -246,6 +246,7 @@ axon diff BASE..HEAD         Structural branch comparison
 axon setup                   Print MCP configuration JSON
     --claude                 For Claude Code
     --cursor                 For Cursor
+    --codex                  For Codex
 
 axon mcp                     Start the MCP server (stdio transport)
 axon serve                   Start the MCP server (same as axon mcp)
@@ -299,6 +300,22 @@ Or run:
 
 ```bash
 axon setup --cursor
+```
+
+### Setup for Codex
+
+Add to your Codex MCP config (`~/.codex/config.toml`):
+
+```toml
+[mcp_servers.axon]
+command = "axon"
+args = ["serve", "--watch"]
+```
+
+Or run:
+
+```bash
+axon setup --codex
 ```
 
 ### MCP Tools

@@ -260,20 +260,28 @@ def cypher(
 def setup(
     claude: bool = typer.Option(False, "--claude", help="Configure MCP for Claude Code."),
     cursor: bool = typer.Option(False, "--cursor", help="Configure MCP for Cursor."),
+    codex: bool = typer.Option(False, "--codex", help="Configure MCP for Codex."),
 ) -> None:
-    """Configure MCP for Claude Code / Cursor."""
+    """Configure MCP for Claude Code / Cursor / Codex."""
     mcp_config = {
         "command": "axon",
         "args": ["serve", "--watch"],
     }
 
-    if claude or (not claude and not cursor):
+    no_flags = not claude and not cursor and not codex
+
+    if claude or no_flags:
         console.print("[bold]Add to your Claude Code MCP config:[/bold]")
         console.print(json.dumps({"axon": mcp_config}, indent=2))
 
-    if cursor or (not claude and not cursor):
+    if cursor or no_flags:
         console.print("[bold]Add to your Cursor MCP config:[/bold]")
         console.print(json.dumps({"axon": mcp_config}, indent=2))
+
+    if codex or no_flags:
+        codex_toml = '[mcp_servers.axon]\ncommand = "axon"\nargs = ["serve", "--watch"]'
+        console.print("[bold]Add to your Codex MCP config (~/.codex/config.toml):[/bold]")
+        console.print(codex_toml, markup=False)
 
 @app.command()
 def watch() -> None:
